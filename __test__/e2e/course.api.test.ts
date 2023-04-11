@@ -112,7 +112,7 @@ describe('/course', () => {
 
         await request(app)
             .put('/courses/' + createdCourse.id)
-            .send(data.title)
+            .send({title: data.title})
             .expect(204)
 
         await request(app)

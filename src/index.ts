@@ -25,6 +25,14 @@ const db: {courses: CourseType[]} = {
         {id: 4, title: 'devops', studentsCount: 10},
     ]
 }
+
+const getCourseViewModel = (dbCourse: CourseType): CourseViewModel => {
+    return {
+        id: dbCourse.id,
+        title: dbCourse.title
+    }   
+}
+
 app.get('/', (req, res) => {
     res.send("Hello")
 })
@@ -39,12 +47,7 @@ app.get('/courses', (req: RequestWithQuery<QueryCoursesModel>,
         foundCourses = foundCourses.filter(c => c.title.indexOf(req.query.title) > -1)
     }
     
-    res.json(foundCourses.map(dbCourse => {
-        return {
-            id: dbCourse.id,
-            title: dbCourse.title
-        }
-    })) 
+    res.json(foundCourses.map(getCourseViewModel)) 
 })
 
 app.post('/courses', (req: RequestWithBody<CreateCourseModel>,
@@ -60,10 +63,7 @@ app.post('/courses', (req: RequestWithBody<CreateCourseModel>,
         studentsCount: 0
     }
     db.courses.push(createCourse)
-    res.status(201).json({
-        id: createCourse.id,
-        title: createCourse.title
-    })
+    res.status(201).json(getCourseViewModel(createCourse))
 })
 
 app.get('/courses/:id', (req: RequestWithParams<UriParamsidModel>, 
@@ -75,10 +75,7 @@ app.get('/courses/:id', (req: RequestWithParams<UriParamsidModel>,
         return;
     } 
 
-    res.json({
-        id: foundCourse.id,
-        title: foundCourse.title
-    })
+    res.json(getCourseViewModel(foundCourse))
 })
 
 app.delete('/courses/:id', (req: RequestWithParams<UriParamsidModel>, res) => {
